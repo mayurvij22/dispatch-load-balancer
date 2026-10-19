@@ -410,6 +410,7 @@ Request flow: `Controller → Service (interface) → Repository / Strategy → 
 | **Template / shared helper**   | `UpsertSupport.prepareUpsert` contains the generic upsert workflow. Order and vehicle services supply ID extractors and mapping functions. |
 | **Immutability**               | DTOs and strategy results are records with defensive `List.copyOf`. The strategy keeps mutable planning state private to a single call. |
 
+
 **Database efficiency**
 
 - **Upsert without N+1 queries.** Entities have client-assigned IDs and implement `Persistable`, so Spring Data does not `SELECT` before each save. The service loads existing rows with one `findAllById` query, chunked at 1,000 IDs. It updates the loaded entities (dirty checking emits batched `UPDATE`s) and creates the rest, then makes a single `saveAll` call (batched `INSERT`s).
@@ -430,5 +431,6 @@ Request flow: `Controller → Service (interface) → Repository / Strategy → 
 - **Display formatting.** `totalDistance` is rounded to 2 decimals as `"X.XX km"`. `totalLoad` is rounded to 2 decimals. Whole numbers are written as `10`, not `10.0`, as in the specification.
 - **Priority input** is case-insensitive (`"high"` is accepted). Unknown JSON properties are ignored.
 - **No authentication**, because the assignment does not require it.
-#   d i s p a t c h - l o a d - b a l a n c e r  
+#   d i s p a t c h - l o a d - b a l a n c e r 
+ 
  
