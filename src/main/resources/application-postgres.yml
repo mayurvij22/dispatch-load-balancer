@@ -1,0 +1,25 @@
+# PostgreSQL profile: run with  -Dspring-boot.run.profiles=postgres  (or SPRING_PROFILES_ACTIVE=postgres)
+#
+# Connection settings, in order of precedence:
+#   1. DB_URL                          - a full JDBC URL
+#   2. DB_HOST / DB_PORT / DB_NAME     - individual parts (what render.yaml wires from the Render database)
+#   3. localhost:5432/dispatch         - local development default
+spring:
+  datasource:
+    # reWriteBatchedInserts lets the driver collapse batched INSERTs into multi-row statements
+    url: ${DB_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:dispatch}?reWriteBatchedInserts=true}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      # Small pool: free-tier databases allow few connections
+      maximum-pool-size: ${DB_POOL_SIZE:5}
+
+  h2:
+    console:
+      enabled: false
+
+  jpa:
+    hibernate:
+      # Keep data between restarts; use Flyway/Liquibase for real production schemas
+      ddl-auto: update

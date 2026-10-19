@@ -1,0 +1,39 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Creates the web service (Docker) and a PostgreSQL database, and wires them together.
+services:
+  - type: web
+    name: dispatch-load-balancer
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    autoDeploy: true
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: postgres
+      - key: DB_HOST
+        fromDatabase:
+          name: dispatch-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: dispatch-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: dispatch-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: dispatch-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: dispatch-db
+          property: password
+
+databases:
+  - name: dispatch-db
+    plan: free
+    databaseName: dispatch
+    user: dispatch
